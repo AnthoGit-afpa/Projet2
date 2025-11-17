@@ -1,0 +1,193 @@
+📚 Cheat-sheet Git — Commandes essentielles
+1. Configuration
+
+git config --global user.name "Ton Nom" : définir ton nom pour les commits
+
+git config --global user.email "ton@email.com" : définir ton email
+
+git config --global core.editor "vim" : choisir un éditeur par défaut
+
+2. Initialisation / Clonage
+
+git init : créer un nouveau dépôt Git local 
+git-scm.com
++2
+isi.pages.ird.fr
++2
+
+git clone <url> : cloner un dépôt distant 
+git-scm.com
+
+3. Suivi des changements
+
+git status : voir l’état des fichiers (modifiés, non suivis, etc) 
+git-scm.com
+
+git diff : voir les différences non mises en “staging” 
+git-scm.com
++1
+
+git diff --cached : voir les différences entre la “staging area” et le dernier commit 
+git-scm.com
+
+4. Ajouter / retirer des fichiers (staging)
+
+git add <fichier> : ajouter un fichier au “staging area” 
+git-scm.com
+
+git add . : ajouter tous les fichiers modifiés 
+git-scm.com
+
+git reset <fichier> : retirer un fichier du staging 
+git-scm.com
+
+git rm <fichier> : supprimer un fichier suivi par Git 
+git-scm.com
+
+git mv <ancien> <nouveau> : renommer / déplacer un fichier 
+git-scm.com
+
+5. Commit
+
+git commit -m "message" : créer un commit avec un message 
+git-scm.com
+
+git commit -am "message" : “add” + “commit” (pour les fichiers déjà suivis) 
+git-scm.com
+
+git commit --amend : modifier le dernier commit (message + contenu) 
+isi.pages.ird.fr
+
+6. Branches
+
+git branch : lister toutes les branches locales 
+git-scm.com
+
+git branch <branche> : créer une nouvelle branche 
+GeeksforGeeks
++1
+
+git switch <branche> : passer à une branche existante 
+git-scm.com
++1
+
+git switch -c <nouvelle-branche> : créer + basculer directement sur la branche 
+git-scm.com
+
+git branch -d <branche> : supprimer une branche déjà fusionnée 
+isi.pages.ird.fr
+
+git branch -D <branche> : forcer la suppression d’une branche 
+Gist
+
+7. Fusion / Réécriture d’historique
+
+git merge <branche> : fusionner la branche donnée dans la branche courante 
+isi.pages.ird.fr
+
+git rebase <branche> : “réécrire” l’historique pour appliquer les commits de façon linéaire 
+git-scm.com
+
+git cherry-pick <commit> : prendre un commit précis d’une autre branche et l’appliquer à la branche courante 
+git-cheat-sheet.readthedocs.io
+
+8. Annuler / restaurer des changements
+
+git revert <commit> : créer un commit inverse pour annuler un commit précédent, sans effacer l’historique 
+isi.pages.ird.fr
+
+git reset --hard <commit> : revenir à un commit précis et supprimer tous les changements après (dangereux) 
+Gist
++1
+
+git reset --soft HEAD~1 : annuler le dernier commit, tout en gardant les modifications dans la staging area 
+Gist
+
+git restore <fichier> : restaurer un fichier dans l’état du dernier commit (annule les modifs non commit) 
+git-cheat-sheet.readthedocs.io
+
+git restore --staged <fichier> : retirer un fichier du staging sans perdre les modifications 
+tt.ciscoar.com
+
+9. Stash (mettre de côté temporairement)
+
+git stash : sauvegarder les changements non commités dans une “pile” (stash) 
+isi.pages.ird.fr
++1
+
+git stash list : lister les stashs existants 
+isi.pages.ird.fr
+
+git stash apply : réappliquer un stash sans le supprimer 
+isi.pages.ird.fr
+
+git stash pop : réappliquer le stash le plus récent et le supprimer de la pile 
+isi.pages.ird.fr
+
+git stash drop stash@{n} : supprimer un stash spécifique 
+support.configura.com
+
+git stash clear : vider tous les stashs 
+git-cheat-sheet.readthedocs.io
+
+10. Historique / inspection
+
+git log : voir l’historique des commits 
+git-scm.com
+
+git log --oneline : historique simplifié, 1 ligne par commit 
+isi.pages.ird.fr
+
+git show <commit> : voir les détails d’un commit précis 
+isi.pages.ird.fr
+
+git blame <fichier> : voir qui a modifié chaque ligne d’un fichier 
+support.configura.com
+
+git reflog : voir “l’historique des HEAD”, c’est utile pour retrouver des commits perdus 
+Gist
+
+11. Travailler avec des dépôts distants (GitHub / GitLab)
+
+git remote add origin <url> : ajouter un dépôt distant nommé “origin” 
+isi.pages.ird.fr
+
+git remote -v : afficher les remotes configurés 
+Gist
+
+git push -u origin <branche> : pousser ta branche locale vers le remote et définir le suivi 
+git-scm.com
+
+git push : pousser les commits vers ton remote “tracking” par défaut 
+git-scm.com
+
+git pull : récupérer les commits du remote et les fusionner à ta branche locale 
+engineersplanet.com
+
+git fetch : télécharger les nouveautés du remote sans faire de fusion 
+Gist
+
+12. Tags (versions)
+
+git tag <nom> : créer un tag “léger” sur le commit courant 
+support.configura.com
+
+git tag -a <nom> -m "message" : créer un tag annoté avec un message 
+isi.pages.ird.fr
+
+git push origin <tag> : pousser un tag vers le dépôt distant 
+isi.pages.ird.fr
+
+git tag -d <tag> : supprimer un tag local 
+support.configura.com
+
+git push --delete origin <tag> : supprimer un tag sur le remote 
+tt.ciscoar.com
+
+13. Nettoyage
+
+git clean -fd : supprimer tous les fichiers non suivis (dangereux, à utiliser avec précaution) 
+git-scm.com
+
+git merge --abort : abandonner une fusion en cas de conflit 
+isi.pages.ird.fr
