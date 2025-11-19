@@ -1,0 +1,83 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+  # ==============================================================
+  # VM Base de données : db-server
+  # ==============================================================
+  config.vm.define "db-server" do |db|
+    db.vm.box = "bento/debian-13"
+    db.vm.hostname = "db-server"
+    db.vm.network "private_network", ip: "192.168.56.11"
+
+    db.vm.provider "virtualbox" do |vb|
+      vb.name = "db-server"
+      vb.memory = 1024
+      vb.cpus = 1
+    end
+
+    # Blocage 100 % supprimé sur Debian 13
+    db.vm.provision "shell", inline: <<-SHELL
+      export DEBIAN_FRONTEND=noninteractive
+
+      # Pré-configuration des paquets qui posent problème
+      cat <<EOF | debconf-set-selections
+keyboard-configuration  keyboard-configuration/layoutcode      string  fr
+keyboard-configuration  keyboard-configuration/variant       select  Français
+tzdata                  tzdata/Areas                         select  Europe
+tzdata                  tzdata/Zones/Europe                  select  Paris
+postfix                 postfix/mailname                     string  localhost
+postfix                 postfix/main_mailer_type             select  No configuration
+EOF
+
+      # Rendre la variable persistante
+      echo "DEBIAN_FRONTEND=noninteractive" >> /etc/environment
+    SHELL
+
+    # Ton script de provisionnement MariaDB
+    db.vm.provision "shell", path: "provision_db.sh"
+  end
+
+  # ==============================================================
+  # VM Serveur Web : web-server
+  # ==============================================================
+  config.vm.define "web-server" do |web|
+    web.vm.box = "bento/debian-13"
+    web.vm.hostname = "web-server"
+    web.vm.network "private_network", ip: "192.168.56.10"
+    web.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+
+    web.vm.provider "virtualbox" do |vb|
+      vb.name = "web-server"
+      vb.memory = 1024
+      vb.cpus = 1
+    end
+
+    # Dossier partagé pour le site
+    web.vm.synced_folder "shared", "/var/www/html",
+      owner: "www-data",
+      group: "www-data",
+      mount_options: ["dmode=0755", "fmode=0644"]
+
+    # Même anti-blocage que sur db-server
+    web.vm.provision "shell", inline: <<-SHELL
+      export DEBIAN_FRONTEND=noninteractive
+
+      cat <<EOF | debconf-set-selections
+keyboard-configuration  keyboard-configuration/layoutcode      string  fr
+keyboard-configuration  keyboard-configuration/variant       select  Français
+tzdata                  tzdata/Areas                         select  Europe
+tzdata                  tzdata/Zones/Europe                  select  Paris
+postfix                 postfix/mailname                     string  localhost
+postfix                 postfix/main_mailer_type             select  No configuration
+EOF
+
+      echo "DEBIAN_FRONTEND=noninteractive" >> /etc/environment
+    SHELL
+
+    # Ton script Apache + PHP
+    web.vm.provision "shell", path: "provision_web.sh"
+  end
+
+end
